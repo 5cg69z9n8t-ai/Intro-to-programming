@@ -1,2 +1,101 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+
+while 1:
+    a = input("1 hide 2 get 3 exit: ")
+    
+    if a == "1":
+        b = input("file: ")
+        c = input("save as: ")
+        t = input("text: ")
+        
+        if t == "FILE":
+            d = input("file name: ")
+            try:
+                g = open(d, "r")
+                t = g.read()
+                g.close()
+            except:
+                print("bad file")
+                continue
+        
+        t = t + "###END###"
+        
+        r = ""
+        for x in t:
+            v = ord(x)
+            s = ""
+            for _ in range(8):
+                s = str(v % 2) + s
+                v = v // 2
+            r += s
+        
+        try:
+            g = open(b, "rb")
+            m = list(g.read())
+            g.close()
+            
+            if len(r) > len(m) * 8:
+                print("too big")
+                continue
+            
+            p = 0
+            for i in range(len(m)):
+                if p >= len(r):
+                    break
+                if r[p] == "1":
+                    m[i] = m[i] | 1
+                else:
+                    m[i] = m[i] & 254
+                p += 1
+            
+            g = open(c, "wb")
+            g.write(bytes(m))
+            g.close()
+            print("done")
+            
+        except:
+            print("error")
+    
+    elif a == "2":
+        b = input("file: ")
+        
+        try:
+            g = open(b, "rb")
+            m = g.read()
+            g.close()
+            
+            r = ""
+            for v in m:
+                if v & 1:
+                    r += "1"
+                else:
+                    r += "0"
+            
+            t = ""
+            for i in range(0, len(r), 8):
+                if i + 8 > len(r):
+                    break
+                z = r[i:i+8]
+                n = 0
+                for bit in z:
+                    n = n * 2
+                    if bit == "1":
+                        n += 1
+                t += chr(n)
+                
+                if t.endswith("###END###"):
+                    t = t[:-8]
+                    break
+            
+            if t:
+                print("msg:", t)
+            else:
+                print("no msg")
+                
+        except:
+            print("error")
+    
+    elif a == "3":
+        break
+    
+    else:
+        print("wrong")
